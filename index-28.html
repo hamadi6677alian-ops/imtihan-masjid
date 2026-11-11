@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17483b">
+  <title>اختبار طلاب المسجد</title>
+  <style>
+    :root {
+      --green: #17483b; --green-light: #236653; --ink: #172a25;
+      --muted: #687872; --paper: #f5f7f4; --line: #e0e8e2;
+      --gold: #c49a48; --red: #a63f3f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      line-height: 1.7;
+    }
+    button, input { font: inherit; }
+    .top {
+      color: white; padding: 27px 18px 32px;
+      background: linear-gradient(130deg, #12382f, #236653);
+      border-bottom: 4px solid var(--gold);
+    }
+    .wrap { width: min(760px, calc(100% - 28px)); margin-inline: auto; }
+    .brand { color: #d5e7df; font-size: 13px; }
+    h1 { font-size: clamp(25px, 6vw, 34px); margin: 13px 0 3px; line-height: 1.35; }
+    .top p { margin: 0; color: #d8e7e0; font-size: 14px; }
+    main { padding: 22px 0 48px; }
+    .panel, .question {
+      background: white; border: 1px solid var(--line); border-radius: 17px;
+      padding: 20px; margin-bottom: 15px; box-shadow: 0 5px 20px #183d3010;
+    }
+    .eyebrow { color: var(--green-light); font-size: 12px; font-weight: 800; }
+    .intro h2 { font-size: 20px; margin: 4px 0 7px; }
+    .intro p { color: var(--muted); font-size: 14px; margin: 0; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .chip { background: #edf4ef; border: 1px solid #dce9df; border-radius: 30px; padding: 5px 11px; font-size: 12px; color: #315747; }
+    .field { display: block; margin-top: 17px; font-size: 14px; font-weight: 700; }
+    .field input {
+      display: block; width: 100%; margin-top: 7px; padding: 12px;
+      border: 1px solid #d5dfd8; border-radius: 11px; background: white;
+    }
+    .field input:focus { outline: 2px solid #8eb7a5; outline-offset: 1px; }
+    .actions, .nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .btn { border: 0; border-radius: 12px; padding: 11px 17px; font-weight: 800; cursor: pointer; }
+    .primary { background: var(--green); color: white; }
+    .secondary { background: #edf3ef; color: var(--green); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .hidden { display: none !important; }
+    .exam-head, .qtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .timer { background: #fff5e4; border: 1px solid #f1dfbd; color: #704e18; padding: 6px 12px; border-radius: 10px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .progressline { height: 7px; background: #e7eee9; border-radius: 30px; overflow: hidden; margin: 13px 0 18px; }
+    .progressline span { display: block; height: 100%; width: 0; background: var(--green-light); transition: width .2s; }
+    .qtop { color: var(--muted); font-size: 12px; font-weight: 700; }
+    .question h3 { font-size: 18px; margin: 10px 0; }
+    .quote { display: block; background: #f5f8f5; border-right: 3px solid var(--gold); padding: 10px 13px; border-radius: 9px; margin: 10px 0 14px; font-size: 22px; font-family: "Traditional Arabic", serif; }
+    .verse-ref { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .opts { display: grid; gap: 9px; }
+    .option { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; cursor: pointer; }
+    .option.selected { background: #edf5f0; border-color: #6f9a85; }
+    .option input { accent-color: var(--green-light); width: 17px; height: 17px; flex: 0 0 auto; }
+    .nav .btn { flex: 1; }
+    .note { color: var(--muted); font-size: 12px; margin-top: 12px; }
+    .result { text-align: center; padding: 25px 19px; }
+    .score { width: 112px; height: 112px; border: 7px solid #dcebe1; border-radius: 50%; display: grid; place-items: center; margin: 16px auto; color: var(--green); font-size: 30px; font-weight: 900; }
+    .result p { color: var(--muted); }
+    .review { text-align: right; margin-top: 20px; }
+    .review-item { border-top: 1px solid var(--line); padding: 13px 0; }
+    .correct { color: #246746; font-weight: 800; }
+    .wrong { color: var(--red); font-weight: 800; }
+    .explain { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    footer { text-align: center; color: #84928b; font-size: 11px; padding: 0 15px 25px; }
+    @media (min-width: 600px) { .panel, .question { padding: 23px; } }
+    @media print { body { background: white; } .top, .actions, .footer { display: none !important; } .panel { box-shadow: none; border: 0; } }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand">۞ منصة الاختبارات التعليمية</div>
+      <h1>اختبار طلاب المسجد</h1>
+      <p>نموذج تجريبي للتقييم والمراجعة</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="start" class="panel intro">
+      <div class="eyebrow">نموذج رقم ١ · التجويد</div>
+      <h2>أحكام النون الساكنة والتنوين والميم الساكنة</h2>
+      <p>أجب عن الأسئلة العشرة، ثم أنهِ الاختبار لتظهر علامتك والإجابات الصحيحة مع توضيح مختصر.</p>
+      <div class="meta">
+        <span class="chip">١٠ أسئلة</span><span class="chip">اختيار من متعدد</span>
+        <span class="chip">١٠ دقائق</span><span class="chip">العلامة من ١٠</span>
+      </div>
+      <label class="field">اسم الطالب <span style="color:#89958f;font-weight:400">(اختياري)</span>
+        <input id="student" maxlength="35" placeholder="اكتب اسمك هنا" autocomplete="off">
+      </label>
+      <div class="actions"><button class="btn primary" id="begin">ابدأ الاختبار</button></div>
+      <div class="note">تنبيه: لا تُرسل الإجابات إلى المعلم؛ تظهر النتيجة على جهاز الطالب فقط.</div>
+    </section>
+
+    <section id="exam" class="hidden">
+      <div class="exam-head">
+        <strong id="studentLabel">الاختبار</strong>
+        <div class="timer">الوقت: <span id="time">١٠:٠٠</span></div>
+      </div>
+      <div class="progressline"><span id="progress"></span></div>
+      <div id="questionHost"></div>
+      <div class="nav">
+        <button class="btn secondary" id="prev">السابق</button>
+        <button class="btn primary" id="next">التالي</button>
+        <button class="btn primary hidden" id="submit">إنهاء الاختبار</button>
+      </div>
+      <p class="note" id="answered"></p>
+    </section>
+
+    <section id="result" class="panel result hidden" aria-live="polite">
+      <div class="eyebrow">انتهى الاختبار</div>
+      <h2 id="resultTitle">نتيجتك</h2>
+      <div class="score"><span id="score">٠/١٠</span></div>
+      <p id="resultText"></p>
+      <div class="review" id="review"></div>
+      <div class="actions" style="justify-content:center">
+        <button class="btn primary" id="again">إعادة الاختبار</button>
+        <button class="btn secondary" onclick="window.print()">طباعة النتيجة</button>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">نسخة تجريبية · قابلة للتطوير لاحقاً</footer>
+
+  <script>
+    const questions = [
+      {q:'ما حكم النون الساكنة في المثال القرآني الآتي؟',t:'مِنْ بَعْدِ',ref:'الروم: ٤',o:['إظهار حلقي','إدغام بغنة','إقلاب','إخفاء حقيقي'],a:2,e:'جاء بعد النون الساكنة حرف الباء، وحكمها الإقلاب.'},
+      {q:'ما حكم النون الساكنة في المثال القرآني الآتي؟',t:'مِنْ هَادٍ',ref:'الرعد: ٣٣',o:['إظهار حلقي','إخفاء حقيقي','إدغام بغير غنة','إقلاب'],a:0,e:'جاء بعد النون حرف الهاء، وهو من حروف الإظهار الحلقي.'},
+      {q:'ما حكم النون الساكنة في المثال القرآني الآتي؟',t:'مِنْ رَبِّهِمْ',ref:'البقرة: ٥',o:['إدغام بغنة','إدغام بغير غنة','إخفاء حقيقي','إظهار حلقي'],a:1,e:'جاء بعد النون حرف الراء، وحكمها الإدغام بغير غنة.'},
+      {q:'ما حكم النون الساكنة في المثال القرآني الآتي؟',t:'مِنْ شَرِّ',ref:'الفلق: ٢',o:['إقلاب','إظهار حلقي','إخفاء حقيقي','إدغام بغنة'],a:2,e:'جاء بعد النون حرف الشين، وهو من حروف الإخفاء الحقيقي.'},
+      {q:'ما حكم النون الساكنة في المثال القرآني الآتي؟',t:'أَنْعَمْتَ',ref:'الفاتحة: ٧',o:['إظهار حلقي','إدغام بغنة','إخفاء حقيقي','إقلاب'],a:0,e:'جاء بعد النون حرف العين، وهو من حروف الإظهار الحلقي.'},
+      {q:'ما حكم التنوين في المثال القرآني الآتي؟',t:'وُجُوهٌ يَوْمَئِذٍ',ref:'القيامة: ٢٢',o:['إظهار حلقي','إدغام بغنة','إدغام بغير غنة','إقلاب'],a:1,e:'جاء بعد التنوين حرف الياء، وهو من حروف الإدغام بغنة.'},
+      {q:'ما حكم الميم الساكنة في المثال القرآني الآتي؟',t:'تَرْمِيهِمْ بِحِجَارَةٍ',ref:'الفيل: ٤',o:['إظهار شفوي','إدغام شفوي','إخفاء شفوي','إقلاب'],a:2,e:'جاء بعد الميم الساكنة حرف الباء، وحكمها الإخفاء الشفوي.'},
+      {q:'ما حكم الميم الساكنة في المثال القرآني الآتي؟',t:'لَهُمْ مَا يَشَاءُونَ',ref:'الزمر: ٣٤',o:['إدغام شفوي','إظهار شفوي','إخفاء شفوي','إظهار حلقي'],a:0,e:'جاءت بعد الميم الساكنة ميم متحركة، فيكون إدغاماً شفوياً.'},
+      {q:'ما حكم الميم الساكنة في المثال القرآني الآتي؟',t:'أَمْ لَهُمْ',ref:'الشورى: ٢١',o:['إخفاء شفوي','إدغام شفوي','إظهار شفوي','إقلاب'],a:2,e:'جاء بعد الميم الساكنة حرف اللام، وحكمها الإظهار الشفوي.'},
+      {q:'أيّ الحروف الآتية من حروف الإظهار الحلقي؟',t:'اختر الحرف الصحيح',ref:'',o:['الشين','العين','الفاء','الواو'],a:1,e:'العين من حروف الإظهار الحلقي الستة: الهمزة، والهاء، والعين، والحاء، والغين، والخاء.'}
+    ];
+
+    let answers = Array(questions.length).fill(null);
+    let index = 0;
+    let remaining = 600;
+    let timer = null;
+    let finished = false;
+    const $ = id => document.getElementById(id);
+    const toArabic = n => String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
+
+    function updateProgress() {
+      const answeredCount = answers.filter(value => value !== null).length;
+      $('progress').style.width = (answeredCount / questions.length * 100) + '%';
+      $('answered').textContent = `أجبت عن ${toArabic(answeredCount)} من ${toArabic(questions.length)} أسئلة.`;
+    }
+
+    function renderQuestion() {
+      const question = questions[index];
+      const reference = question.ref ? `<span class="verse-ref">سورة ${question.ref}</span>` : '';
+      $('questionHost').innerHTML = `
+        <article class="question">
+          <div class="qtop"><span>السؤال ${toArabic(index + 1)} من ${toArabic(questions.length)}</span><span>درجة واحدة</span></div>
+          <h3>${question.q}</h3>
+          <span class="quote">${question.t}${reference}</span>
+          <div class="opts">${question.o.map((option, i) => `
+            <label class="option ${answers[index] === i ? 'selected' : ''}">
+              <input type="radio" name="answer" value="${i}" ${answers[index] === i ? 'checked' : ''}>
+              <span>${'أ ب ج د'[i]} ـ ${option}</span>
+            </label>`).join('')}
+          </div>
+        </article>`;
+
+      document.querySelectorAll('input[name="answer"]').forEach(input => {
+        input.addEventListener('change', event => {
+          answers[index] = Number(event.target.value);
+          document.querySelectorAll('.option').forEach(label => label.classList.remove('selected'));
+          event.target.closest('.option').classList.add('selected');
+          updateProgress();
+        });
+      });
+
+      $('prev').disabled = index === 0;
+      $('next').classList.toggle('hidden', index === questions.length - 1);
+      $('submit').classList.toggle('hidden', index !== questions.length - 1);
+      updateProgress();
+    }
+
+    function updateTimer() {
+      remaining -= 1;
+      const minutes = Math.floor(remaining / 60);
+      const seconds = remaining % 60;
+      $('time').textContent = `${toArabic(minutes).padStart(2, '٠')}:${toArabic(seconds).padStart(2, '٠')}`;
+      if (remaining <= 0) finish(true);
+    }
+
+    function startExam() {
+      answers = Array(questions.length).fill(null);
+      index = 0;
+      remaining = 600;
+      finished = false;
+      $('start').classList.add('hidden');
+      $('result').classList.add('hidden');
+      $('exam').classList.remove('hidden');
+      const name = $('student').value.trim();
+      $('studentLabel').textContent = name ? `الطالب: ${name}` : 'الاختبار';
+      $('time').textContent = '١٠:٠٠';
+      renderQuestion();
+      clearInterval(timer);
+      timer = setInterval(updateTimer, 1000);
+    }
+
+    function finishExam(timeExpired = false) {
+      if (finished) return;
+      finished = true;
+      clearInterval(timer);
+      const score = answers.reduce((total, answer, i) => total + (answer === questions[i].a ? 1 : 0), 0);
+      $('exam').classList.add('hidden');
+      $('result').classList.remove('hidden');
+      $('score').textContent = `${toArabic(score)}/${toArabic(questions.length)}`;
+      const name = $('student').value.trim();
+      $('resultTitle').textContent = name ? `أحسنت يا ${name}` : 'نتيجتك';
+      $('resultText').textContent = `${timeExpired ? 'انتهى الوقت. ' : ''}أجبت إجابة صحيحة عن ${toArabic(score)} من أصل ${toArabic(questions.length)}.`;
+      $('review').innerHTML = '<h3>مراجعة الإجابات</h3>' + questions.map((question, i) => {
+        const isCorrect = answers[i] === question.a;
+        const chosen = answers[i] === null ? 'لم تجب عن السؤال' : question.o[answers[i]];
+        return `<div class="review-item">
+          <strong>${toArabic(i + 1)}. ${question.t} — <span class="${isCorrect ? 'correct' : 'wrong'}">${isCorrect ? 'إجابة صحيحة' : 'إجابة غير صحيحة'}</span></strong>
+          <div>إجابتك: ${chosen}</div>
+          <div class="correct">الصواب: ${question.o[question.a]}</div>
+          <div class="explain">${question.e}</div>
+        </div>`;
+      }).join('');
+    }
+
+    $('begin').addEventListener('click', startExam);
+    $('prev').addEventListener('click', () => { if (index > 0) { index -= 1; renderQuestion(); } });
+    $('next').addEventListener('click', () => { if (index < questions.length - 1) { index += 1; renderQuestion(); } });
+    $('submit').addEventListener('click', () => finishExam(false));
+    $('again').addEventListener('click', () => {
+      clearInterval(timer);
+      $('start').classList.remove('hidden');
+      $('result').classList.add('hidden');
+      $('exam').classList.add('hidden');
+      $('student').focus();
+    });
+  </script>
+</body>
+</html>
